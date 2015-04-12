@@ -5,3 +5,5 @@ http://habrahabr.ru/post/168601/ - PostgreSQL installing tutorial
 Configure examples:
 ./configure --help
 ./configure --with-openssl
+
+nickfishman.com/post/49533681471/nodejs-http-requests-with-gzip-deflate-compression
