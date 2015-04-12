@@ -10,7 +10,7 @@ module.exports = function(client, callback) {
   var query = '?latitude=' + STATION_LATITUDE +
               '&longitude=' + STATION_LONGITUDE;
 
-  http.get('192.168.0.127/info' + query, function(res) {
+  http.get('http://192.168.0.127/info' + query, function(res) {
     var chunks = [];
 
     res.on('data', function(chunk) {
@@ -20,8 +20,7 @@ module.exports = function(client, callback) {
     res.on('end', function() {
       var buffer = Buffer.concat(chunks);
 
-      client.context.data = process(buffer);
-      callback();
+      process(buffer);
     });
 
   }).on('error', function(e) {
@@ -38,9 +37,9 @@ module.exports = function(client, callback) {
 
       var coords = JSON.parse(decoded.toString());
       // need processing
-      return coords;
+      client.context.data = coords;
+      callback();
 
     });
   }
-  
 };
