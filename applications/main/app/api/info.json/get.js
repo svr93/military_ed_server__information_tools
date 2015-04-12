@@ -37,7 +37,11 @@ module.exports = function(client, callback) {
 
       var coords = JSON.parse(decoded.toString());
       // need processing
-      client.context.data = coords;
+      client.context.data = {
+        latitude: STATION_LATITUDE,
+        longitude: STATION_LONGITUDE,
+        coords: coords
+      };
       callback();
 
     });
