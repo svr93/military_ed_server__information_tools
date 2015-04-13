@@ -19,20 +19,35 @@ module.exports = function(client, callback) {
 
     res.on('end', function() {
       var buffer = Buffer.concat(chunks);
+      
+      if (res.headers['content-encoding'] == 'gzip') {
+        processGzip(buffer);
+      } else {
+        process(buffer);
+      }
 
-      process(buffer);
     });
 
   }).on('error', function(e) {
 
     client.context.data = {
-      error: e.message
+      error: e.message,
+      explanation: ""
     };
+    
+    if (e.message == "connect ETIMEDOUT" ||
+        e.message == "connect EHOSTUNREACH" ||
+        e.message == "connect ECONNREFUSED") {
+        
+      client.context.data.explanation =
+      "Targets generation server is not responding";
+    }
+    
     callback();
 
   });
 
-  function process(buffer) {
+  function processGzip(buffer) {
     zlib.gunzip(buffer, function(err, decoded) {
 
       var coords = JSON.parse(decoded.toString());
@@ -45,5 +60,16 @@ module.exports = function(client, callback) {
       callback();
 
     });
+  }
+  
+  function process(buffer) {
+    var coords = JSON.parse(buffer.toString());
+    // need processing
+    client.context.data = {
+      latitude: STATION_LATITUDE,
+      longitude: STATION_LONGITUDE,
+      coords: coords
+    };
+    callback();
   }
 };
