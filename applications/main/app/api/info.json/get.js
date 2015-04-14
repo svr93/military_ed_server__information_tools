@@ -9,6 +9,8 @@ module.exports = function(client, callback) {
 
   var query = '?latitude=' + STATION_LATITUDE +
               '&longitude=' + STATION_LONGITUDE;
+              
+  console.log('...request');
 
   http.get('http://192.168.0.127/info' + query, function(res) {
     var chunks = [];
@@ -55,7 +57,7 @@ module.exports = function(client, callback) {
       client.context.data = {
         latitude: STATION_LATITUDE,
         longitude: STATION_LONGITUDE,
-        coords: coords
+        result: coords
       };
       callback();
 
@@ -68,7 +70,7 @@ module.exports = function(client, callback) {
     client.context.data = {
       latitude: STATION_LATITUDE,
       longitude: STATION_LONGITUDE,
-      coords: coords
+      result: coords
     };
     callback();
   }
