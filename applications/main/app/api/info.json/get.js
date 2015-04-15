@@ -4,8 +4,8 @@ module.exports = function(client, callback) {
   var http = require('http');
   var zlib = require('zlib');
 
-  var STATION_LATITUDE = 60;
-  var STATION_LONGITUDE = 70;
+  var STATION_LATITUDE = 44.93;
+  var STATION_LONGITUDE = 40.98;
 
   var query = '?latitude=' + STATION_LATITUDE +
               '&longitude=' + STATION_LONGITUDE;
@@ -51,27 +51,18 @@ module.exports = function(client, callback) {
 
   function processGzip(buffer) {
     zlib.gunzip(buffer, function(err, decoded) {
-
-      var coords = JSON.parse(decoded.toString());
-      // need processing
-      client.context.data = {
-        latitude: STATION_LATITUDE,
-        longitude: STATION_LONGITUDE,
-        result: coords
-      };
-      callback();
-
+      process(decoded);
     });
   }
   
   function process(buffer) {
     var coords = JSON.parse(buffer.toString());
     // need processing
-    client.context.data = {
-      latitude: STATION_LATITUDE,
-      longitude: STATION_LONGITUDE,
-      result: coords
-    };
+    
+    coords.latitude = STATION_LATITUDE;
+    coords.longitude = STATION_LONGITUDE;
+    
+    client.context.data = coords;
     callback();
   }
 };
